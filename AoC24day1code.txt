@@ -1,0 +1,32 @@
+# python
+import numpy as np
+lines = open(file_name, "r").readlines()
+lines = [re.sub('\n','',line) for line in lines]
+x = np.array([int(line.split(' ')[0]) for line in lines])
+y = np.array([int(line.split(' ')[-1]) for line in lines])
+#A
+print('A:',abs(np.sort(x)-np.sort(y)).sum())
+#B
+unique_x, counts_x = np.unique(x, return_counts=True)   
+unique_y, counts_y = np.unique(y, return_counts=True)
+common_id = np.intersect1d(unique_x, unique_y)
+sum = 0
+for id in common_id:
+    sum += id*counts_y[np.where(unique_y == id)[0][0]]  
+
+###
+
+# R
+library(tidyverse)
+filename = "input/data01_2024.txt"
+#load input
+input<-read.delim(filename,header=FALSE,sep=" ")
+df = input %>% select('V1','V4')
+colnames(df) = c('left','right')
+#A
+left_sorted = df$left[order(df$left)]
+right_sorted = df$right[order(df$right)]
+sum(abs(left_sorted-right_sorted))
+#B
+ids = intersect(df$right, df$left)
+sum(table(df$right)[as.character(ids)]*ids) 
